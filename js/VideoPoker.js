@@ -2,8 +2,11 @@ import {CARD, TYPE} from "./CARD.js";
 import { NUM_HAND, NUM_TOTAL, CheckCard } from "./CheckCard.js";
 
 export class VideoPoker{
+    
+
     constructor(){
-        this.m_checker = new CheckCard();
+        this.m_pChecker = new CheckCard();
+        
         this.m_pHand = new Array(NUM_HAND);
         this.m_pAvail = new Array(NUM_HAND);
         this.m_pRemain = new Array(NUM_TOTAL - NUM_HAND);
@@ -44,22 +47,25 @@ export class VideoPoker{
         }
     }
     ChangeOneCARD(card, handIdx, remainIdx)  {
-        card[handIdx].AssignFrom(m_pRemain[remainIdx])
+        card[handIdx].AssignFrom(this.m_pRemain[remainIdx])
     }
     ComputeAvgCreditForCardChange(card, handIdx, numChangeCard) {
         
-        values = this.ComputeTotalCreditForCardChange(card, handIdx, 0, numChangeCard)
-        credit = value.first;
-        numComputeCredit = value.second;
+        var values = this.ComputeTotalCreditForCardChange(card, handIdx, 0, numChangeCard)
+        var credit = values.first;
+        var numComputeCredit = values.second;
         
-        return Float(credit) / Float(numComputeCredit)
+        return credit / numComputeCredit;
         
     }
     ComputeTotalCreditForCardChange(card, handIdx,  startRemainIdx, numChangeCard) {
-        var numComputeCredit = -1;
+        var numComputeCredit = 0;
         if(numChangeCard == 0) {
             numComputeCredit = 1;
-            return this.ComputeCredit(card);
+            return {
+                first : this.ComputeCredit(card), 
+                second : numComputeCredit,
+            }
         }
         
         var tempCARD = new Array(NUM_HAND);
@@ -78,9 +84,10 @@ export class VideoPoker{
 
         for(var i = startRemainIdx;i <(NUM_TOTAL - NUM_HAND);i++) {
             this.ChangeOneCARD(tempCARD, handIdx[0], i);
-            values = this.ComputeTotalCreditForCardChange(tempCARD, tempHandIdx, i + 1, numChangeCard - 1);
+            var values = this.ComputeTotalCreditForCardChange(tempCARD, tempHandIdx, i + 1, numChangeCard - 1);
             credit += values.first;
             numComputeCredit += values.second;
+
         }
             
         return {
@@ -94,6 +101,7 @@ export class VideoPoker{
             tempCARD[i] = new CARD();
             tempCARD[i].AssignFrom(card[i])
         }
+        
         this.m_pChecker.Sorting(tempCARD)
 
         return this.m_pChecker.ReturnCredit(tempCARD, 1)
@@ -102,16 +110,16 @@ export class VideoPoker{
         var tempCARD = new Array(NUM_HAND);
         for(var i = 0;i < NUM_HAND;i++){
             tempCARD[i] = new CARD();
-            tempCARD[i].AssignFrom(card[i])
+            tempCARD[i].AssignFrom(this.m_pHand[i])
         }
 
         this.m_pChecker.Sorting(tempCARD)
-        credit = this.m_pChecker.ReturnCredit(tempCARD, 1)
-        result = this.m_pChecker.PrintHandCheckForString(tempCARD) + ", Credit : " + credit.toString()
+        var credit = this.m_pChecker.ReturnCredit(tempCARD, 1)
+        var result = this.m_pChecker.PrintHandCheckForString(tempCARD) + ", Credit : " + String(credit);
         return result
     }
     PrintCard(card, numCard)  {
-        for(i=0;i<numCard;i++) {
+        for(var i=0;i<numCard;i++) {
             card[i].Print()
         }
     }
@@ -138,7 +146,7 @@ export class VideoPoker{
         var cntRemain = 0;
         for(var i=0;i<NUM_TOTAL;i++) {
             if(!isHand[i]) {
-                this.m_pRemain[cntRemain].m_number =  i / 4 + 1;
+                this.m_pRemain[cntRemain].m_number =  Math.floor(i / 4) + 1;
                 this.m_pRemain[cntRemain].m_type = this.ConValToType(i % 4);
                 cntRemain++;
             }
@@ -158,14 +166,14 @@ export class VideoPoker{
         GenerateNCard(handIdx,  NUM_TOTAL,  NUM_HAND);
 
         for(var i=0;i<NUM_HAND;i++){
-            this.m_pHand[i].m_number = cards[i].m_number;
-            this.m_pHand[i].m_type = cards[i].m_type;
-            isHand[this.ConTypeToVal(cards[i].m_type) + (cards[i].m_number - 1) * 4] = true;
+            this.m_pHand[i].m_number = Math.floor(handIdx[i] / 4) + 1;
+            this.m_pHand[i].m_type = this.ConValToType(handIdx[i] % 4);
+            isHand[handIdx[i]] = true;
         }
         var cntRemain = 0;
         for(var i=0;i<NUM_TOTAL;i++) {
             if(!isHand[i]) {
-                this.m_pRemain[cntRemain].m_number =  i / 4 + 1;
+                this.m_pRemain[cntRemain].m_number =  Math.floor(i / 4) + 1;
                 this.m_pRemain[cntRemain].m_type = this.ConValToType(i % 4);
                 cntRemain++;
             }
@@ -185,14 +193,14 @@ export class VideoPoker{
         handIdx[4] = 14;
 
         for(var i=0;i<NUM_HAND;i++){
-            this.m_pHand[i].m_number = cards[i].m_number;
-            this.m_pHand[i].m_type = cards[i].m_type;
-            isHand[this.ConTypeToVal(cards[i].m_type) + (cards[i].m_number - 1) * 4] = true;
+            this.m_pHand[i].m_number = Math.floor(handIdx[i] / 4) + 1;
+            this.m_pHand[i].m_type = this.ConValToType(handIdx[i] % 4);
+            isHand[handIdx[i]] = true;
         }
         var cntRemain = 0;
         for(var i=0;i<NUM_TOTAL;i++) {
             if(!isHand[i]) {
-                this.m_pRemain[cntRemain].m_number =  i / 4 + 1;
+                this.m_pRemain[cntRemain].m_number =  Math.floor(i / 4) + 1;
                 this.m_pRemain[cntRemain].m_type = this.ConValToType(i % 4);
                 cntRemain++;
             }
@@ -324,7 +332,7 @@ export class VideoPoker{
             handIdx[i] = -1;
         }
         
-        values = this.ComputeOptimumChange(handIdx)
+        var values = this.ComputeOptimumChange(handIdx)
 
         return {
             first : handIdx,
@@ -349,9 +357,8 @@ export class VideoPoker{
             handIdx[i] = -1;
         }
         
-        values = this.ComputeOptimumChange(handIdx)
-        //print(optimumCredit)
-        
+        var values = this.ComputeOptimumChange(handIdx)
+        console.log(values.first, values.second);
         var changeIdx = new Array(values.first);
         for(var i=0;i<values.first;i++){
             changeIdx[i] = -1;
@@ -359,7 +366,7 @@ export class VideoPoker{
         this.GenerateNCard(changeIdx, NUM_TOTAL - NUM_HAND, values.first)
 
         for(var i = 0;i<values.first;i++) {
-            m_pHand[handIdx[i]].AssignFrom(m_pRemain[changeIdx[i]]);
+            this.m_pHand[handIdx[i]].AssignFrom(this.m_pRemain[changeIdx[i]]);
         }
     }
 
@@ -373,11 +380,12 @@ export class VideoPoker{
             handIdx[i] = -1;
         }
         
-        var numChangeCard  = 0
-        var cntRemain
-        var optimumCredit
-        var numGame = 0
-        var totalCredit = 0.0
+        var numChangeCard  = 0;
+        var cntRemain;
+        var optimumCredit;
+        var numGame = 0;
+        var totalCredit = 0.0;
+        var values;
 
         for(var c1=0;c1<NUM_TOTAL;c1++) {
             for(var c2=c1+1;c2<NUM_TOTAL;c2++) {
@@ -387,15 +395,15 @@ export class VideoPoker{
                             for(var i = 0;i<NUM_TOTAL;i++){
                                 isHand[i] = false;
                             }
-                            this.m_pHand[0].m_number = c1 / 4+1;
+                            this.m_pHand[0].m_number = Math.floor(c1 / 4) + 1;
                             this.m_pHand[0].m_type = this.ConValToType(c1 % 4);
-                            this.m_pHand[1].m_number = c2 / 4+1;
+                            this.m_pHand[1].m_number = Math.floor(c2 / 4) + 1;
                             this.m_pHand[1].m_type = this.ConValToType(c2 % 4);
-                            this.m_pHand[2].m_number = c3 / 4+1;
+                            this.m_pHand[2].m_number = Math.floor(c3 / 4) + 1;
                             this.m_pHand[2].m_type = this.ConValToType(c3 % 4);
-                            this.m_pHand[3].m_number = c4 / 4+1;
+                            this.m_pHand[3].m_number = Math.floor(c4 / 4) + 1;
                             this.m_pHand[3].m_type = this.ConValToType(c4 % 4);
-                            this.m_pHand[4].m_number = c5 / 4+1;
+                            this.m_pHand[4].m_number = Math.floor(c5 / 4) + 1;
                             this.m_pHand[4].m_type = this.ConValToType(c5 % 4);
 
                             isHand[c1] = true;
@@ -407,17 +415,16 @@ export class VideoPoker{
                             cntRemain = 0;
                             for(var i = 0;i<NUM_TOTAL;i++){
                                 if(!isHand[i]) {
-                                    this.m_pRemain[cntRemain].m_number = i / 4 + 1;
+                                    this.m_pRemain[cntRemain].m_number = Math.floor(i / 4) + 1;
                                     this.m_pRemain[cntRemain].m_type = this.ConValToType(i % 4);
                                     cntRemain++;
                                 }
                             }
 
-                            values = this.ComputeOptimumChange(handIdx)
+                            values = this.ComputeOptimumChange(handIdx);
                             totalCredit += values.second;
                             numGame++;
-                            //print("Probability", numGame, totalCredit, Float(totalCredit) / Float(numGame))
-                            console.log("Probability " + numGame.toString() + " " + optimumCredit.toString() + " " + totalCredit.toString())
+                            console.log("Probability", numGame, values.second, totalCredit);
                             /*if(numGame % 10 == 0) {
                                 println("Probability" + numGame.toString() + "," + totalCredit.toString() + "," + ((totalCredit.toFloat()) / (numGame.toFloat())).toString())
                             }*/
@@ -426,6 +433,6 @@ export class VideoPoker{
                 }
             }
         }
-        console.log("Total Probability" + numGame.toString() + "," + totalCredit.toString() + "," + ((totalCredit.toFloat()) / (numGame.toFloat())).toString())
+        console.log("Total Probability", numGame, ",", totalCredit,  "," ,totalCredit / numGame);
     }
 }
