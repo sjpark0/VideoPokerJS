@@ -27,6 +27,9 @@ var resultText = document.getElementById("txt_result");
 var statusText = document.getElementById("txt_status");
 
 const btnGenerator = document.getElementById("btn_generator");
+const btnAutoChange = document.getElementById("btn_autochange");
+const btnApprove = document.getElementById("btn_approve");
+
 btnGenerator.addEventListener('click', () => {
     var numChange = g_numChange;
     var changeIdx = new Array();
@@ -48,6 +51,55 @@ btnGenerator.addEventListener('click', () => {
     }
     resultText.innerText = g_game.PrintResultForString();
     statusText.innerText = "Generate";
+});
+
+btnAutoChange.addEventListener('click', () => {
+    var numChange = g_numChange;
+    var changeIdx = new Array();
+
+    for(var i=0;i<g_numChange;i++){
+        changeIdx.push(g_changeIdx[i]);
+    }
+    for(var i=0;i<numChange;i++){
+        valCheckBox[changeIdx[i]].checked = false;
+        valCheckBox[changeIdx[i]].dispatchEvent(new Event('change'));
+    }
+  
+    var values  = g_game.ChangeHandIdx()
+
+    for(var i=0;i<values.second;i++){
+        valCheckBox[values.first[i]].checked = true;
+        valCheckBox[values.first[i]].dispatchEvent(new Event('change'));
+    }
+    
+    changeIdx.sort(function(a, b){
+        return a-b;
+    });
+    g_changeIdx.sort(function(a, b){
+        return a-b;
+    });
+    
+    if(g_numChange == numChange) {
+        if(changeIdx.toString() == g_changeIdx.toString()) {
+            statusText.innerText = "Correct"
+        }
+        else{
+            statusText.innerText = "Incorrect1"
+        }
+    }
+    else{
+        statusText.innerText = "Incorrect2"
+    }
+});
+
+btnApprove.addEventListener('click', () => {
+    g_game.ReplaceChangeHandIdx(g_changeIdx, g_numChange)
+    g_game.PrintHand()
+
+    for(var i=0;i<NUM_HAND;i++){
+        valCheckBoxText[i].innerText = g_game.PrintHandForString(i);
+    }
+    resultText.innerText = g_game.PrintResultForString()
 });
 
 for(var i=0;i<NUM_HAND;i++){

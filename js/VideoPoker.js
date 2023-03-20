@@ -336,7 +336,7 @@ export class VideoPoker{
 
         return {
             first : handIdx,
-            second : valuse.first,
+            second : values.first,
         }
     }
 
@@ -348,7 +348,7 @@ export class VideoPoker{
         this.GenerateNCard(changeIdx, NUM_TOTAL - NUM_HAND, numChangeCard);
 
         for(var i = 0;i<numChangeCard;i++) {
-            m_pHand[handIdx[i]].AssignFrom(m_pRemain[changeIdx[i]]);
+            this.m_pHand[handIdx[i]].AssignFrom(this.m_pRemain[changeIdx[i]]);
         }
     }
     ChangeHand()  {
