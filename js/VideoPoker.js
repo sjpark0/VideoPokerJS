@@ -163,7 +163,7 @@ export class VideoPoker{
             handIdx[i] = -1;
         }
 
-        GenerateNCard(handIdx,  NUM_TOTAL,  NUM_HAND);
+        this.GenerateNCard(handIdx,  NUM_TOTAL,  NUM_HAND);
 
         for(var i=0;i<NUM_HAND;i++){
             this.m_pHand[i].m_number = Math.floor(handIdx[i] / 4) + 1;

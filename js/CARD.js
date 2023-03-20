@@ -74,4 +74,44 @@ export class CARD{
         }
         
     }
+    PrintForString() {
+        var result = ""
+        switch(this.m_number){
+            case 1:
+                result += "A,";
+                break;
+            case 11:
+                result += "J,";
+                break;
+            case 12:
+                result += "Q,";
+                break;
+            case 13:
+                result += "K,";
+                break;
+            default:
+                result += String(this.m_number) + ",";
+                break;
+        }
+
+        switch(this.m_type){
+            case TYPE.CARD_CLOVER:
+                result += "Clover";
+                break;
+            case TYPE.CARD_DIAMOND:
+                result += "Diamond";
+                break;
+            case TYPE.CARD_HEART:
+                result += "Heart";
+                break;
+            case TYPE.CARD_SPADE:
+                result += "Spade";
+                break;
+            default:
+                result += "Unknown";
+                break;
+        }
+
+        return result
+    }
 }

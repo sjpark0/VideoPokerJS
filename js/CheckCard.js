@@ -197,6 +197,43 @@ export class CheckCard{
             console.log("Nothing");
         }
     } // test
+    PrintHandCheckForString(card) {
+        var result = "";
+        if (this.IsRoyalFlush(card)) {
+            result = "Royal Flush";
+        }
+        else if (this.IsStraightFlush(card)) {
+            result = "Straight Flush";
+        }
+        else if (this.IsFourCARD(card)) {
+            result = "Four CARD";
+        }
+        else if (this.IsFullHouse(card)) {
+            result = "Full House";
+        }
+        else if (this.IsFlush(card)) {
+            result = "Flush";
+        }
+        else if (this.IsStraight(card)) {
+            result = "Straight";
+        }
+        else if (this.IsTriple(card)) {
+            result = "Triple";
+        }
+        else if (this.IsTwoPair(card)) {
+            result = "Two Pair";
+        }
+        else if (this.IsJackBetter(card)) {
+            result = "Jack Better";
+        }
+        else if (this.IsOnePair(card)) {
+            result = "One Pair";
+        }
+        else {
+            result = "Nothing";
+        }
+        return result;
+    }
     Sorting(card) {
         var tempCARD = new CARD();
         
