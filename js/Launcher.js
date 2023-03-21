@@ -100,6 +100,17 @@ btnApprove.addEventListener('click', () => {
         valCheckBoxText[i].innerText = g_game.PrintHandForString(i);
     }
     resultText.innerText = g_game.PrintResultForString()
+
+    var numChange = g_numChange;
+    var changeIdx = new Array();
+
+    for(var i=0;i<g_numChange;i++){
+        changeIdx.push(g_changeIdx[i]);
+    }
+    for(var i=0;i<numChange;i++){
+        valCheckBox[changeIdx[i]].checked = false;
+        valCheckBox[changeIdx[i]].dispatchEvent(new Event('change'));
+    }
 });
 
 for(var i=0;i<NUM_HAND;i++){
